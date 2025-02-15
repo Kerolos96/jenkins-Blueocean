@@ -24,13 +24,6 @@ pipeline {
 
     stage('Unit Test Cases') {
       steps {
-        script {
-          for(i = 0; i < 60; i++){
-            echo "{$i + 1}"
-            sleep 1
-          }
-        }
-
         sh 'mvn test'
       }
     }
