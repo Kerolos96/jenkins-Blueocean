@@ -1,38 +1,42 @@
 pipeline {
-    agent any
-    tools {
-        // Install the Maven version configured as "M399" and add it to the path.
-        maven "M399"
-    }
+  agent any
   stages {
     stage('Check Java Version') {
-    steps {
+      steps {
         sh 'java -version'
         sh 'javac -version'
-          }
-     }
-        stage('Echo Version'){
-         steps{
-          sh 'echo print Maven Version'
-          sh 'mvn -version'
-         }
-         }
-        stage('Build JAR'){
-         steps{
-        //  git branch: 'main', url: 'https://github.com/Kerolos96/jenkins-hello-world.git'
-         sh "mvn clean package -DskipTests=true"
-         }
-         }   
-         stage ('Unit Test Cases'){
-         steps {
-         script {
-         for(i = 0; i < 60; i++){
+      }
+    }
+
+    stage('Echo Version') {
+      steps {
+        sh 'echo print Maven Version'
+        sh 'mvn -version'
+      }
+    }
+
+    stage('Build JAR') {
+      steps {
+        sh 'mvn clean package -DskipTests=true'
+        archiveArtifacts 'target/hello-demo-*.jar'
+      }
+    }
+
+    stage('Unit Test Cases') {
+      steps {
+        script {
+          for(i = 0; i < 60; i++){
             echo "{$i + 1}"
             sleep 1
-            }
-            }
-          sh "mvn test"   
-         }
-         }    
-         }
-         }    
+          }
+        }
+
+        sh 'mvn test'
+      }
+    }
+
+  }
+  tools {
+    maven 'M399'
+  }
+}
